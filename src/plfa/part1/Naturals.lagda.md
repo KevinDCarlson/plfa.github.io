@@ -261,8 +261,8 @@ about it from the Agda standard library:
 
 ```agda
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
+open Eq using (_≡_;refl)
+open Eq.≡-Reasoning using (begin_;_≡⟨⟩_;_∎)
 ```
 
 The first line brings the standard library module that defines
@@ -513,7 +513,12 @@ Define exponentiation, which is given by the following equations:
 Check that `3 ^ 4` is `81`.
 
 ```agda
--- Your code goes here
+_^_ : ℕ → ℕ → ℕ
+m ^ zero = suc zero
+m ^ (suc n) = (m ^ n) * m
+
+_ : 3 ^ 4 ≡ 81
+_ = refl
 ```
 
 
@@ -596,7 +601,29 @@ Section [Logical Connectives](/Decidable/#logical-connectives).
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
 ```agda
--- Your code goes here
+_ = begin
+  5 ∸ 3
+ ≡⟨⟩
+  4 ∸ 2
+ ≡⟨⟩
+  3 ∸ 1
+ ≡⟨⟩
+  2 ∸ 0
+ ≡⟨⟩
+  2
+ ∎
+_ =
+ begin
+  3 ∸ 5
+ ≡⟨⟩
+  2 ∸ 4
+ ≡⟨⟩
+  1 ∸ 3
+ ≡⟨⟩
+  0 ∸ 2
+ ≡⟨⟩
+  0
+ ∎
 ```
 
 
@@ -783,10 +810,11 @@ in combination provide features that help to create definitions
 and proofs interactively.
 
 Begin by typing:
-
-    _+_ : ℕ → ℕ → ℕ
-    m + n = ?
-
+```agda
+_⊕_ : ℕ → ℕ → ℕ
+zero ⊕ n = n
+suc m ⊕ n = suc (m ⊕ n)
+```
 The question mark indicates that you would like Agda to help with
 filling in that part of the code. If you type `C-c C-l` (pressing
 the control key while hitting the `c` key followed by the `l` key),
@@ -943,7 +971,34 @@ represents a positive natural, and represent zero by `⟨⟩ O`.
 Confirm that these both give the correct answer for zero through four.
 
 ```agda
--- Your code goes here
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (n O) = n I
+inc (n I) = (inc n) O
+
+to : ℕ → Bin
+to zero = ⟨⟩
+to (suc m) = inc (to m)
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (m O) = 2 * from m
+from (m I) = 2 * from m + 1
+```
+```agda
+_ =
+ begin
+  inc(⟨⟩ I)
+ ≡⟨⟩
+  (inc ⟨⟩) O
+ ≡⟨⟩
+  ⟨⟩ I O
+ ∎
+_ : inc(⟨⟩ I I I) ≡ ⟨⟩ I O O O
+_ = refl
+
+_ : to(17) ≡ ⟨⟩ I O O O I
+_ = refl
 ```
 
 
